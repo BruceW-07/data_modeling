@@ -123,7 +123,8 @@ class AdaBoost:
         elif self.base_estimator_type == 'svm':
             # 确保SVC支持样本权重
             # probability=True 使得模型能够计算概率输出，同时也能使用样本权重
-            return SVC(kernel='linear', probability=True, max_iter=1000, decision_function_shape='ovr')
+            # return SVC(kernel='linear', probability=True, max_iter=1000, decision_function_shape='ovr')
+            return SVC(kernel='linear', C=1.0, decision_function_shape='ovr')
         else:
             raise ValueError("不支持的基分类器类型，请确保基分类器支持sample_weight参数")
 

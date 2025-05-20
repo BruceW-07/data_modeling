@@ -8,7 +8,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC  # 修改导入
 
-from data_loader import load_mnist_data
+from data_loader import load_mnist_data, load_mnist_local
 from svm_models import compare_svm_kernels
 from adaboost import compare_adaboost_base_estimators, AdaBoost
 from evaluation import evaluate_models, detailed_model_analysis
@@ -22,7 +22,8 @@ def main():
     np.random.seed(42)
     
     # 加载并预处理MNIST数据集
-    X_train, X_test, y_train, y_test = load_mnist_data()
+    # X_train, X_test, y_train, y_test = load_mnist_data()
+    X_train, X_test, y_train, y_test = load_mnist_local()
     
     # 为降低计算复杂度，可以减少样本数量
     # 如处理时间过长，可以取消下面的注释
