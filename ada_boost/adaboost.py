@@ -121,7 +121,7 @@ class AdaBoost:
             return DecisionTreeClassifier(max_depth=1)  # 决策树桩
         elif self.base_estimator_type == 'svm':
             # return SVC(kernel='linear', probability=True, max_iter=1000, decision_function_shape='ovr') # 线性SVM
-            return SVC(kernel='linear', C=1.0, max_iter=100, decision_function_shape='ovr') # 线性SVM
+            return SVC(kernel='linear', C=1.0, max_iter=1000, decision_function_shape='ovr') # 线性SVM
         else:
             raise ValueError(f"不支持的基分类器类型：{self.base_estimator_type}.")
 

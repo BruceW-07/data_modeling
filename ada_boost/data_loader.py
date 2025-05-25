@@ -74,7 +74,7 @@ def load_mnist_local():
     返回:
     X_train, X_test, y_train, y_test: 处理后的训练和测试数据
     """
-    data_dir = "mnist_data"
+    data_dir = "data"
     
     print("正在从本地加载MNIST数据集...")
     try:

@@ -19,23 +19,28 @@ def plot_performance_comparison(performance_df, save_path='bin/model_performance
     
     # 创建图形
     fig, axes = plt.subplots(1, 3, figsize=(18, 6))
-    
+    model_labels = performance_df['Model'].tolist()
+    ticks_pos = np.arange(len(model_labels))
+
     # 绘制准确率比较
     sns.barplot(x='Model', y='Accuracy', data=performance_df, ax=axes[0])
     axes[0].set_title('Model Accuracy')
-    axes[0].set_ylim(0.8, 1.0)  # 设置y轴范围
-    axes[0].set_xticklabels(axes[0].get_xticklabels(), rotation=45, ha='right')
-    
+    axes[0].set_ylim(0, 1.0)
+    axes[0].set_xticks(ticks_pos)
+    axes[0].set_xticklabels(model_labels, rotation=45, ha='right')
+
     # 绘制F1值比较
     sns.barplot(x='Model', y='F1 Score', data=performance_df, ax=axes[1])
     axes[1].set_title('Model F1 Score')
-    axes[1].set_ylim(0.8, 1.0)  # 设置y轴范围
-    axes[1].set_xticklabels(axes[1].get_xticklabels(), rotation=45, ha='right')
-    
+    axes[1].set_ylim(0, 1.0)
+    axes[1].set_xticks(ticks_pos)
+    axes[1].set_xticklabels(model_labels, rotation=45, ha='right')
+
     # 绘制训练时间比较
     sns.barplot(x='Model', y='Training Time (s)', data=performance_df, ax=axes[2])
     axes[2].set_title('Model Training Time')
-    axes[2].set_xticklabels(axes[2].get_xticklabels(), rotation=45, ha='right')
+    axes[2].set_xticks(ticks_pos)
+    axes[2].set_xticklabels(model_labels, rotation=45, ha='right')
     
     plt.tight_layout()
     plt.savefig(save_path, dpi=300)
