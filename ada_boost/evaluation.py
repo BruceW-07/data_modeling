@@ -26,7 +26,7 @@ def get_performance_df(svm_results, adaboost_results):
     
     # 提取AdaBoost模型性能
     for estimator_type, metrics in adaboost_results.items():
-        base_name = 'decision stump' if estimator_type == 'tree' else 'linear SVM'
+        base_name = 'decision stump' if estimator_type == 'stump' else 'linear SVM'
         performance_data.append({
             'Model': f'AdaBoost with {base_name}',
             'Accuracy': metrics['accuracy'],

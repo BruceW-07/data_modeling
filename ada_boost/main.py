@@ -1,6 +1,7 @@
 import numpy as np
 import time
 import pandas as pd
+import os
 import matplotlib.pyplot as plt
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
@@ -46,39 +47,16 @@ def main():
     performance_df = get_performance_df(svm_results, adaboost_results)
     print("\n模型性能比较:")
     print(performance_df)
+
+    # 保存性能比较结果到CSV文件
+    result_dir = 'result'
+    os.makedirs(result_dir, exist_ok=True)
+    csv_path = f'{result_dir}/model_performance_comparison.csv'
+    performance_df.to_csv(csv_path, index=True)
+    print(f"\n性能比较结果已保存至: {csv_path}")
     
     # 绘制性能比较图
     plot_performance_comparison(performance_df)
-    
-    # 针对每个模型进行详细分析
-    for kernel, metrics in svm_results.items():
-        report, conf_matrix = detailed_model_analysis(
-            metrics['model'], X_test, y_test, f'SVM ({kernel})'
-        )
-        plot_confusion_matrix(
-            conf_matrix, 
-            f'SVM ({kernel})', 
-            f'confusion_matrix_svm_{kernel}.png'
-        )
-    
-    for estimator_type, metrics in adaboost_results.items():
-        base_name = '决策树桩' if estimator_type == 'tree' else '线性SVM'
-        report, conf_matrix = detailed_model_analysis(
-            metrics['model'], X_test, y_test, f'AdaBoost with {base_name}'
-        )
-        plot_confusion_matrix(
-            conf_matrix, 
-            f'AdaBoost with {base_name}', 
-            f'confusion_matrix_adaboost_{estimator_type}.png'
-        )
-        
-        # 绘制AdaBoost学习曲线
-        error_rates = metrics['model'].error_rates
-        plot_learning_curves(
-            error_rates, 
-            f'AdaBoost with {base_name}', 
-            f'learning_curve_adaboost_{estimator_type}.png'
-        )
     
     print("分析完成。结果和可视化已保存。")
 

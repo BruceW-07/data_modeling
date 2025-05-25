@@ -26,7 +26,7 @@ class AdaBoost:
         
     def fit(self, X, y):
         """
-        训练AdaBoost模型 - SAMME算法支持多分类
+        训练AdaBoost模型（使用SAMME算法解决多分类问题）
         
         参数:
         X: 特征数据
@@ -46,10 +46,10 @@ class AdaBoost:
             print(f"训练第{i+1}个基分类器...", end=' ')
             t = time.time()
 
-            # 克隆基分类器
+            # 获取基分类器
             estimator = self.new_estimator()
             
-            # 对样本分配对应的权重
+            # 对样本分配对应的权重后进行训练
             estimator.fit(X, y_encoded, sample_weight=weights)
 
             print(f"耗时: {time.time() - t:.2f}秒")
@@ -117,26 +117,23 @@ class AdaBoost:
         返回:
         estimator: 新建的基分类器
         """
-        if self.base_estimator_type == 'tree':
-            # 确保决策树支持样本权重
+        if self.base_estimator_type == 'stump':
             return DecisionTreeClassifier(max_depth=1)  # 决策树桩
         elif self.base_estimator_type == 'svm':
-            # 确保SVC支持样本权重
-            # probability=True 使得模型能够计算概率输出，同时也能使用样本权重
-            # return SVC(kernel='linear', probability=True, max_iter=1000, decision_function_shape='ovr')
-            return SVC(kernel='linear', C=1.0, max_iter=100, decision_function_shape='ovr')
+            # return SVC(kernel='linear', probability=True, max_iter=1000, decision_function_shape='ovr') # 线性SVM
+            return SVC(kernel='linear', C=1.0, max_iter=100, decision_function_shape='ovr') # 线性SVM
         else:
-            raise ValueError("不支持的基分类器类型，请确保基分类器支持sample_weight参数")
+            raise ValueError(f"不支持的基分类器类型：{self.base_estimator_type}.")
 
 
-def train_and_evaluate_adaboost(X_train, X_test, y_train, y_test, base_estimator_type='tree', n_estimators=50, n_classes=10):
+def train_and_evaluate_adaboost(X_train, X_test, y_train, y_test, base_estimator_type='stump', n_estimators=50, n_classes=10):
     """
     训练AdaBoost模型并评估性能
     
     参数:
     X_train, y_train: 训练数据
     X_test, y_test: 测试数据
-    base_estimator_type (str): 基分类器类型 ('tree' 或 'svm')
+    base_estimator_type (str): 基分类器类型 ('stump' 或 'svm')
     n_estimators (int): 基分类器数量
     n_classes (int): 类别数量
     
@@ -147,7 +144,7 @@ def train_and_evaluate_adaboost(X_train, X_test, y_train, y_test, base_estimator
     training_time: 训练时间
     """
     # 选择基分类器
-    if base_estimator_type == 'tree':
+    if base_estimator_type == 'stump':
         estimator_name = "决策树桩"
     elif base_estimator_type == 'svm':
         estimator_name = "线性SVM"
@@ -191,10 +188,10 @@ def compare_adaboost_base_estimators(X_train, X_test, y_train, y_test, n_estimat
     
     # 决策树桩作为基分类器
     tree_model, tree_acc, tree_f1, tree_time = train_and_evaluate_adaboost(
-        X_train, X_test, y_train, y_test, base_estimator_type='tree', 
+        X_train, X_test, y_train, y_test, base_estimator_type='stump', 
         n_estimators=n_estimators, n_classes=n_classes
     )
-    results['tree'] = {
+    results['stump'] = {
         'model': tree_model,
         'accuracy': tree_acc,
         'f1_score': tree_f1,
