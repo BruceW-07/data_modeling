@@ -3,6 +3,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC  # 修改导入
 from sklearn.metrics import accuracy_score, f1_score
 import time
+from sklearn.ensemble import AdaBoostClassifier
 
 class AdaBoost:
     """
@@ -209,5 +210,57 @@ def compare_adaboost_base_estimators(X_train, X_test, y_train, y_test, n_estimat
         'f1_score': svm_f1,
         'training_time': svm_time
     }
+
+    # # 使用sklearn的AdaBoost实现
+
+    # print("\n使用sklearn的AdaBoost进行对比评估...")
+        
+    # # 使用决策树桩作为基分类器
+    # start_time = time.time()
+    # sklearn_tree_model = AdaBoostClassifier(
+    #     estimator=DecisionTreeClassifier(max_depth=1),
+    #     n_estimators=n_estimators
+    # )
+    # sklearn_tree_model.fit(X_train, y_train)
+    # sklearn_tree_time = time.time() - start_time
+
+    # y_pred = sklearn_tree_model.predict(X_test)
+    # sklearn_tree_acc = accuracy_score(y_test, y_pred)
+    # sklearn_tree_f1 = f1_score(y_test, y_pred, average='weighted')
+
+    # print(f"sklearn AdaBoost with 决策树桩 - 准确率: {sklearn_tree_acc:.4f}, F1值: {sklearn_tree_f1:.4f}")
+    # print(f"训练时间: {sklearn_tree_time:.2f} 秒")
+
+    # results['sklearn_tree'] = {
+    #     'model': sklearn_tree_model,
+    #     'accuracy': sklearn_tree_acc,
+    #     'f1_score': sklearn_tree_f1,
+    #     'training_time': sklearn_tree_time
+    # }
+
+    # # 使用sklearn的AdaBoost和SVM比较复杂，因为sklearn的AdaBoost默认只支持SAMME.R算法
+    # # 尝试使用SAMME算法和线性SVM
+    # print("\n使用sklearn的AdaBoost+SVM进行近似对比...")
+    # start_time = time.time()
+    # sklearn_svm_model = AdaBoostClassifier(
+    #     estimator=SVC(kernel='linear', probability=True, C=1.0, max_iter=1000),
+    #     n_estimators=n_estimators
+    # )
+    # sklearn_svm_model.fit(X_train, y_train)
+    # sklearn_svm_time = time.time() - start_time
+
+    # y_pred = sklearn_svm_model.predict(X_test)
+    # sklearn_svm_acc = accuracy_score(y_test, y_pred)
+    # sklearn_svm_f1 = f1_score(y_test, y_pred, average='weighted')
+
+    # print(f"sklearn AdaBoost with 线性SVM - 准确率: {sklearn_svm_acc:.4f}, F1值: {sklearn_svm_f1:.4f}")
+    # print(f"训练时间: {sklearn_svm_time:.2f} 秒")
+
+    # results['sklearn_svm'] = {
+    #     'model': sklearn_svm_model,
+    #     'accuracy': sklearn_svm_acc,
+    #     'f1_score': sklearn_svm_f1,
+    #     'training_time': sklearn_svm_time
+    # }
     
     return results

@@ -2,18 +2,52 @@ import numpy as np
 import time
 import pandas as pd
 import os
-import matplotlib.pyplot as plt
-from sklearn.datasets import fetch_openml
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.svm import SVC  # 修改导入
 
 from data_loader import load_mnist_data, load_mnist_local
 from svm_models import compare_svm_kernels
-from adaboost import compare_adaboost_base_estimators, AdaBoost
-from evaluation import get_performance_df, detailed_model_analysis
-from visualization import plot_performance_comparison, plot_confusion_matrix, plot_learning_curves
+from adaboost import compare_adaboost_base_estimators
+from visualization import plot_performance_comparison
+
+def get_performance_df(svm_results, adaboost_results):
+    """
+    将测试结果转为 DataFrame 格式
+    
+    参数:
+    svm_results: SVM模型结果
+    adaboost_results: AdaBoost模型结果
+    
+    返回:
+    performance_df: 包含性能比较的DataFrame
+    """
+    performance_data = []
+    
+    # 提取SVM模型性能
+    for kernel, metrics in svm_results.items():
+        performance_data.append({
+            'Model': f'SVM ({kernel})',
+            'Accuracy': metrics['accuracy'],
+            'F1 Score': metrics['f1_score'],
+            'Training Time (s)': metrics['training_time']
+        })
+    
+    # 提取AdaBoost模型性能
+    for estimator_type, metrics in adaboost_results.items():
+        base_name = 'decision stump' if estimator_type == 'stump' else 'linear SVM'
+        # if estimator_type == 'sklearn_tree':
+        #     base_name = 'sklearn decision tree'
+        # elif estimator_type == 'sklearn_svm':
+        #     base_name = 'sklearn SVM'
+        performance_data.append({
+            'Model': f'AdaBoost with {base_name}',
+            'Accuracy': metrics['accuracy'],
+            'F1 Score': metrics['f1_score'],
+            'Training Time (s)': metrics['training_time']
+        })
+    
+    # 创建性能比较DataFrame
+    performance_df = pd.DataFrame(performance_data)
+    
+    return performance_df
 
 def main():
     """
@@ -26,12 +60,12 @@ def main():
     # X_train, X_test, y_train, y_test = load_mnist_data()
     X_train, X_test, y_train, y_test = load_mnist_local()
     
-    sample_size = 1000
-    test_size = 200
-    X_train = X_train[:sample_size]
-    y_train = y_train[:sample_size]
-    X_test = X_test[:test_size]
-    y_test = y_test[:test_size]
+    # sample_size = 1000
+    # test_size = 200
+    # X_train = X_train[:sample_size]
+    # y_train = y_train[:sample_size]
+    # X_test = X_test[:test_size]
+    # y_test = y_test[:test_size]
     
     # SVM基础实现
     print("\n1. 比较不同核函数的SVM性能")
@@ -54,6 +88,17 @@ def main():
     csv_path = f'{result_dir}/model_performance_comparison.csv'
     performance_df.to_csv(csv_path, index=True)
     print(f"\n性能比较结果已保存至: {csv_path}")
+
+    # 保存训练好的模型
+    model_dir = 'bin'
+    os.makedirs(model_dir, exist_ok=True)
+    for model_name, metrics in {**svm_results, **adaboost_results}.items():
+        model = metrics['model']
+        model_path = f'{model_dir}/{model_name}_model.pkl'
+        with open(model_path, 'wb') as f:
+            import pickle
+            pickle.dump(model, f)
+        print(f"模型 {model_name} 已保存至: {model_path}")
     
     # 绘制性能比较图
     plot_performance_comparison(performance_df)
