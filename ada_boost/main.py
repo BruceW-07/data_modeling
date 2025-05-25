@@ -11,7 +11,7 @@ from sklearn.svm import SVC  # 修改导入
 from data_loader import load_mnist_data, load_mnist_local
 from svm_models import compare_svm_kernels
 from adaboost import compare_adaboost_base_estimators, AdaBoost
-from evaluation import evaluate_models, detailed_model_analysis
+from evaluation import get_performance_df, detailed_model_analysis
 from visualization import plot_performance_comparison, plot_confusion_matrix, plot_learning_curves
 
 def main():
@@ -19,34 +19,31 @@ def main():
     主程序入口
     """
     # 设置随机种子
-    np.random.seed(42)
+    np.random.seed(27)
     
     # 加载并预处理MNIST数据集
     # X_train, X_test, y_train, y_test = load_mnist_data()
     X_train, X_test, y_train, y_test = load_mnist_local()
     
-    # 为降低计算复杂度，可以减少样本数量
-    # 如处理时间过长，可以取消下面的注释
-    # sample_size = 10000  # 每个集合的样本数量
-    # X_train = X_train[:sample_size]
-    # y_train = y_train[:sample_size]
-    # X_test = X_test[:2000]
-    # y_test = y_test[:2000]
+    sample_size = 1000
+    test_size = 200
+    X_train = X_train[:sample_size]
+    y_train = y_train[:sample_size]
+    X_test = X_test[:test_size]
+    y_test = y_test[:test_size]
     
-    # 多分类任务，直接使用原始数字标签（0-9）
+    # SVM基础实现
     print("\n1. 比较不同核函数的SVM性能")
     svm_results = compare_svm_kernels(X_train, X_test, y_train, y_test)
     
+    # AdaBoost提升SVM性能
     print("\n2. 比较不同基分类器的AdaBoost性能")
-    n_classes = len(np.unique(y_train))  # 类别数量
-    print(f"检测到的类别数量: {n_classes}")
-    
     adaboost_results = compare_adaboost_base_estimators(
-        X_train, X_test, y_train, y_test, n_estimators=30, n_classes=n_classes
+        X_train, X_test, y_train, y_test, n_estimators=30, n_classes=10
     )
     
     # 评估所有模型性能
-    performance_df = evaluate_models(svm_results, adaboost_results)
+    performance_df = get_performance_df(svm_results, adaboost_results)
     print("\n模型性能比较:")
     print(performance_df)
     

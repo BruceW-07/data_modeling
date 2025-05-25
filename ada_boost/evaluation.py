@@ -2,9 +2,9 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import confusion_matrix, classification_report
 
-def evaluate_models(svm_results, adaboost_results):
+def get_performance_df(svm_results, adaboost_results):
     """
-    综合评估所有模型性能
+    将测试结果转为 DataFrame 格式
     
     参数:
     svm_results: SVM模型结果
@@ -26,7 +26,7 @@ def evaluate_models(svm_results, adaboost_results):
     
     # 提取AdaBoost模型性能
     for estimator_type, metrics in adaboost_results.items():
-        base_name = '决策树桩' if estimator_type == 'tree' else '线性SVM'
+        base_name = 'decision stump' if estimator_type == 'tree' else 'linear SVM'
         performance_data.append({
             'Model': f'AdaBoost with {base_name}',
             'Accuracy': metrics['accuracy'],
