@@ -46,3 +46,49 @@ def plot_performance_comparison(performance_df, timestamp, save_path='bin'):
     plt.tight_layout()
     plt.savefig(save_path + f'/model_performance_comparison_{timestamp}.png', dpi=300)
     plt.close()
+
+def plot_adaboost_performance(adaboost_result, timestamp, save_path='bin'):
+    """
+    绘制AdaBoost模型在不同n_estimators下的性能变化图
+    
+    参数:
+    adaboost_result: 包含不同AdaBoost模型结果的字典
+    timestamp: 时间戳，用于文件命名
+    save_path: 保存图片的路径
+    """
+    
+    # 确保保存路径存在
+    os.makedirs(save_path, exist_ok=True)
+    
+    # 遍历adaboost_result中的每个模型
+    for model_name, model_data in adaboost_result.items():
+        if 'performance_analysis' not in model_data:
+            continue
+            
+        performance_analysis = model_data['performance_analysis']
+        
+        # 获取n_estimators和对应的性能指标
+        n_values = list(performance_analysis.keys())
+        accuracy_values = [perf['accuracy'] for n, perf in performance_analysis.items()]
+        f1_values = [perf['f1_score'] for n, perf in performance_analysis.items()]
+        
+        # 创建图形
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+        
+        # 绘制accuracy随n_estimators变化的曲线
+        ax1.plot(n_values, accuracy_values, 'o-', linewidth=2)
+        ax1.set_xlabel('Number of Estimators')
+        ax1.set_ylabel('Accuracy')
+        ax1.set_title(f'{model_name} - Accuracy vs Number of Estimators')
+        ax1.grid(True)
+        
+        # 绘制F1 Score随n_estimators变化的曲线
+        ax2.plot(n_values, f1_values, 'o-', linewidth=2, color='orange')
+        ax2.set_xlabel('Number of Estimators')
+        ax2.set_ylabel('F1 Score')
+        ax2.set_title(f'{model_name} - F1 Score vs Number of Estimators')
+        ax2.grid(True)
+        
+        plt.tight_layout()
+        plt.savefig(save_path + f'/{model_name}_performance_analysis_{timestamp}.png', dpi=300)
+        plt.close()

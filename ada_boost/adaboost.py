@@ -83,7 +83,7 @@ class AdaBoost:
             
         return self
     
-    def predict(self, X):
+    def predict(self, X, n_estimators=None):
         """
         使用AdaBoost模型进行预测 - 多分类版本
         
@@ -99,14 +99,24 @@ class AdaBoost:
         # 初始化投票矩阵
         n_samples = X.shape[0]
         votes = np.zeros((n_samples, self.n_classes))
+
+        # 如果未指定n_estimators，则使用所有训练的基分类器
+        if n_estimators is None:
+            n_estimators = len(self.estimators)
+        else:
+            n_estimators = min(n_estimators, len(self.estimators))
         
         # 汇总所有基分类器的投票
-        for alpha, estimator in zip(self.alphas, self.estimators):
+        for i in range(n_estimators):
+            estimator = self.estimators[i]
+            alpha = self.alphas[i]
+            
+            # 预测类别
             y_pred = estimator.predict(X)
             
             # 将预测转换为one-hot编码
-            for i, pred in enumerate(y_pred):
-                votes[i, int(pred)] += alpha
+            for j, pred in enumerate(y_pred):
+                votes[j, int(pred)] += alpha
                 
         # 返回得票最多的类别
         return np.argmax(votes, axis=1)
@@ -172,6 +182,33 @@ def train_and_evaluate_adaboost(X_train, X_test, y_train, y_test, base_estimator
     
     return model, accuracy, f1, training_time
 
+def performance_analysis_of_adaboost(model, X_test, y_test, n_estimators):
+    """
+    对使用 AdaBoost 模型进行性能分析
+    
+    参数:
+    model: 训练好的 AdaBoost 模型
+    X_test: 测试数据特征
+    y_test: 测试数据标签
+    n_estimators: 基分类器数量
+    
+    返回:
+    result: 包含每个基分类器数量的准确率和 F1 分数的字典
+    """
+    result = {}
+    
+    for n in range(1, n_estimators + 1):
+        y_pred = model.predict(X_test, n_estimators=n)
+        accuracy = accuracy_score(y_test, y_pred)
+        f1 = f1_score(y_test, y_pred, average='weighted')
+        
+        result[n] = {
+            'accuracy': accuracy,
+            'f1_score': f1
+        }
+    
+    return result
+
 def compare_adaboost_base_estimators(X_train, X_test, y_train, y_test, n_estimators=50, n_classes=10):
     """
     比较不同基分类器的AdaBoost性能
@@ -188,27 +225,39 @@ def compare_adaboost_base_estimators(X_train, X_test, y_train, y_test, n_estimat
     results = {}
     
     # 决策树桩作为基分类器
+    n_estimators = 200
     tree_model, tree_acc, tree_f1, tree_time = train_and_evaluate_adaboost(
         X_train, X_test, y_train, y_test, base_estimator_type='stump', 
         n_estimators=n_estimators, n_classes=n_classes
     )
-    results['stump'] = {
+    print(f"对使用决策树桩的AdaBoost模型进行性能分析...")
+    stump_performance_analysis = performance_analysis_of_adaboost(tree_model, X_test, y_test, n_estimators)
+    print(f"性能分析完成")
+    results['decision stump'] = {
         'model': tree_model,
         'accuracy': tree_acc,
         'f1_score': tree_f1,
-        'training_time': tree_time
+        'training_time': tree_time,
+        'n_estimators': n_estimators,
+        'performance_analysis': stump_performance_analysis
     }
     
     # 线性SVM作为基分类器
+    n_estimators = 9
     svm_model, svm_acc, svm_f1, svm_time = train_and_evaluate_adaboost(
         X_train, X_test, y_train, y_test, base_estimator_type='svm', 
         n_estimators=n_estimators, n_classes=n_classes
     )
-    results['svm'] = {
+    print(f"对使用线性SVM的AdaBoost模型进行性能分析...")
+    svm_performance_analysis = performance_analysis_of_adaboost(svm_model, X_test, y_test, n_estimators)
+    print(f"性能分析完成")
+    results[f'linear svm'] = {
         'model': svm_model,
         'accuracy': svm_acc,
         'f1_score': svm_f1,
-        'training_time': svm_time
+        'training_time': svm_time,
+        'n_estimators': n_estimators,
+        'performance_analysis': svm_performance_analysis
     }
 
     # # 使用sklearn的AdaBoost实现
