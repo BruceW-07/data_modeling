@@ -12,9 +12,7 @@ def plot_performance_comparison(performance_df, timestamp, save_path='bin'):
     performance_df: 包含性能比较的DataFrame
     save_path: 保存图片的路径
     """
-
-    # plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
-    
+    save_path = save_path + f'/{timestamp}'
     # 确保保存路径存在
     os.makedirs(save_path, exist_ok=True)
 
@@ -56,7 +54,7 @@ def plot_adaboost_performance(adaboost_result, timestamp, save_path='bin'):
     timestamp: 时间戳，用于文件命名
     save_path: 保存图片的路径
     """
-    
+    save_path = save_path + f'/{timestamp}'
     # 确保保存路径存在
     os.makedirs(save_path, exist_ok=True)
     
@@ -76,14 +74,14 @@ def plot_adaboost_performance(adaboost_result, timestamp, save_path='bin'):
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
         
         # 绘制accuracy随n_estimators变化的曲线
-        ax1.plot(n_values, accuracy_values, 'o-', linewidth=2)
+        ax1.plot(n_values, accuracy_values, 'o-', linewidth=1, color='blue')
         ax1.set_xlabel('Number of Estimators')
         ax1.set_ylabel('Accuracy')
         ax1.set_title(f'{model_name} - Accuracy vs Number of Estimators')
         ax1.grid(True)
         
         # 绘制F1 Score随n_estimators变化的曲线
-        ax2.plot(n_values, f1_values, 'o-', linewidth=2, color='orange')
+        ax2.plot(n_values, f1_values, 'o-', linewidth=1, color='orange')
         ax2.set_xlabel('Number of Estimators')
         ax2.set_ylabel('F1 Score')
         ax2.set_title(f'{model_name} - F1 Score vs Number of Estimators')

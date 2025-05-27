@@ -59,13 +59,14 @@ def save_results(performance_df, svm_results, adaboost_results, result_dir, time
     adaboost_results: AdaBoost模型结果
     result_dir: 结果保存目录
     """
+    result_dir = result_dir + f'/{timestamp}'
     os.makedirs(result_dir, exist_ok=True)
     csv_path = f'{result_dir}/model_performance_comparison_{timestamp}.csv'
     performance_df.to_csv(csv_path, index=True)
     print(f"\n性能比较结果已保存至: {csv_path}")
 
     # 保存训练好的模型
-    model_dir = 'bin'
+    model_dir = 'bin' + f'/{timestamp}/models'
     os.makedirs(model_dir, exist_ok=True)
     for model_name, metrics in {**svm_results, **adaboost_results}.items():
         model = metrics['model']

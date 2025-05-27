@@ -197,7 +197,8 @@ def performance_analysis_of_adaboost(model, X_test, y_test, n_estimators):
     """
     result = {}
     
-    for n in range(1, n_estimators + 1):
+    step = max(1, n_estimators // 30)  # 每10个基分类器进行一次评估
+    for n in range(1, n_estimators + 1, step):
         y_pred = model.predict(X_test, n_estimators=n)
         accuracy = accuracy_score(y_test, y_pred)
         f1 = f1_score(y_test, y_pred, average='weighted')
@@ -225,7 +226,7 @@ def compare_adaboost_base_estimators(X_train, X_test, y_train, y_test, n_estimat
     results = {}
     
     # 决策树桩作为基分类器
-    n_estimators = 200
+    n_estimators = 300
     tree_model, tree_acc, tree_f1, tree_time = train_and_evaluate_adaboost(
         X_train, X_test, y_train, y_test, base_estimator_type='stump', 
         n_estimators=n_estimators, n_classes=n_classes
