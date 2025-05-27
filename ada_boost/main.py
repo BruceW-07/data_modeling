@@ -85,7 +85,8 @@ def main():
     # 保存性能比较结果到CSV文件
     result_dir = 'result'
     os.makedirs(result_dir, exist_ok=True)
-    csv_path = f'{result_dir}/model_performance_comparison.csv'
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    csv_path = f'{result_dir}/model_performance_comparison_{timestamp}.csv'
     performance_df.to_csv(csv_path, index=True)
     print(f"\n性能比较结果已保存至: {csv_path}")
 
@@ -94,14 +95,13 @@ def main():
     os.makedirs(model_dir, exist_ok=True)
     for model_name, metrics in {**svm_results, **adaboost_results}.items():
         model = metrics['model']
-        model_path = f'{model_dir}/{model_name}_model.pkl'
+        model_path = f'{model_dir}/{model_name}_model_{timestamp}.pkl'
         with open(model_path, 'wb') as f:
             import pickle
             pickle.dump(model, f)
         print(f"模型 {model_name} 已保存至: {model_path}")
-    
     # 绘制性能比较图
-    plot_performance_comparison(performance_df)
+    plot_performance_comparison(performance_df, timestamp)
     
     print("分析完成。结果和可视化已保存。")
 

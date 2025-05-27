@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import os
 
-def plot_performance_comparison(performance_df, save_path='bin'):
+def plot_performance_comparison(performance_df, timestamp, save_path='bin'):
     """
     绘制各模型性能比较图
     
@@ -44,5 +44,5 @@ def plot_performance_comparison(performance_df, save_path='bin'):
     axes[2].set_xticklabels(model_labels, rotation=45, ha='right')
     
     plt.tight_layout()
-    plt.savefig(save_path + '/model_performance_comparison.png', dpi=300)
+    plt.savefig(save_path + f'/model_performance_comparison_{timestamp}.png', dpi=300)
     plt.close()
