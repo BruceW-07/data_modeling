@@ -226,7 +226,7 @@ def compare_adaboost_base_estimators(X_train, X_test, y_train, y_test, n_estimat
     results = {}
     
     # 决策树桩作为基分类器
-    n_estimators = 300
+    n_estimators = 250
     tree_model, tree_acc, tree_f1, tree_time = train_and_evaluate_adaboost(
         X_train, X_test, y_train, y_test, base_estimator_type='stump', 
         n_estimators=n_estimators, n_classes=n_classes

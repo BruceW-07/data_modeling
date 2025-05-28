@@ -87,12 +87,12 @@ def main():
     # X_train, X_test, y_train, y_test = load_mnist_data()
     X_train, X_test, y_train, y_test = load_mnist_local()
     
-    sample_size = 1000
-    test_size = 200
-    X_train = X_train[:sample_size]
-    y_train = y_train[:sample_size]
-    X_test = X_test[:test_size]
-    y_test = y_test[:test_size]
+    # sample_size = 1000
+    # test_size = 200
+    # X_train = X_train[:sample_size]
+    # y_train = y_train[:sample_size]
+    # X_test = X_test[:test_size]
+    # y_test = y_test[:test_size]
     
     # SVM基础实现
     print("\n1. 比较不同核函数的SVM性能")
