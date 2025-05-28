@@ -19,11 +19,12 @@ def get_performance_df(svm_results, adaboost_results):
     返回:
     performance_df: 包含性能比较的DataFrame
     """
-    performance_data = []
+    svm_data = []
+    adaboost_data = []
     
     # 提取SVM模型性能
     for kernel, metrics in svm_results.items():
-        performance_data.append({
+        svm_data.append({
             'Model': f'SVM ({kernel})',
             'Accuracy': metrics['accuracy'],
             'F1 Score': metrics['f1_score'],
@@ -36,7 +37,7 @@ def get_performance_df(svm_results, adaboost_results):
         #     base_name = 'sklearn decision tree'
         # elif estimator_type == 'sklearn_svm':
         #     base_name = 'sklearn SVM'
-        performance_data.append({
+        adaboost_data.append({
             'Model': f'AdaBoost with {estimator_type}',
             'Accuracy': metrics['accuracy'],
             'F1 Score': metrics['f1_score'],
@@ -45,9 +46,10 @@ def get_performance_df(svm_results, adaboost_results):
         })
     
     # 创建性能比较DataFrame
-    performance_df = pd.DataFrame(performance_data)
+    svm_df = pd.DataFrame(svm_data)
+    adaboost_df = pd.DataFrame(adaboost_data)
     
-    return performance_df
+    return svm_df, adaboost_df
 
 def save_results(performance_df, svm_results, adaboost_results, result_dir, timestamp):
     """
@@ -87,8 +89,8 @@ def main():
     # X_train, X_test, y_train, y_test = load_mnist_data()
     X_train, X_test, y_train, y_test = load_mnist_local()
     
-    # sample_size = 1000
-    # test_size = 200
+    # sample_size = 500
+    # test_size = 20
     # X_train = X_train[:sample_size]
     # y_train = y_train[:sample_size]
     # X_test = X_test[:test_size]
@@ -105,17 +107,20 @@ def main():
     )
     
     # 获取性能比较DataFrame
-    performance_df = get_performance_df(svm_results, adaboost_results)
+    svm_df, adaboost_df = get_performance_df(svm_results, adaboost_results)
     print("\n模型性能比较:")
-    print(performance_df)
+    print(svm_df)
+    print()
+    print(adaboost_df)
 
     timestamp = time.strftime("%Y%m%d_%H%M%S")
 
     # 保存结果
+    performance_df = pd.concat([svm_df, adaboost_df], ignore_index=True)
     save_results(performance_df, svm_results, adaboost_results, 'results', timestamp)
 
     # 绘制性能比较图
-    plot_performance_comparison(performance_df, timestamp)
+    plot_performance_comparison(svm_df, adaboost_df, timestamp)
 
     # 绘制AdaBoost性能分析图
     plot_adaboost_performance(adaboost_results, timestamp)
