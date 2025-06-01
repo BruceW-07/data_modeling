@@ -13,15 +13,14 @@
 - `data_loader.py`: 数据加载与预处理
 - `svm_models.py`: SVM模型实现
 - `adaboost.py`: AdaBoost算法实现
-- `evaluation.py`: 模型评估与性能比较
 - `visualization.py`: 结果可视化
 - `report.md`: 实验报告
 
 ## 使用方法
 
-1. 确保安装了所需的依赖库：
+1. 安装依赖：
    ```
-   pip install numpy pandas scikit-learn matplotlib seaborn
+   pip install -r requirements.txt
    ```
 
 2. 运行主程序：
@@ -33,8 +32,11 @@
 
 运行程序后，将生成以下结果文件：
 
-- `model_performance_comparison.png`：各模型性能比较图
-- `confusion_matrix_*.png`：各模型的混淆矩阵
-- `learning_curve_*.png`：AdaBoost模型的学习曲线
+- `bin/{timestamp}/svm_model_performance_comparison_{timestamp}.png`: SVM模型性能对比图
+- `bin/{timestamp}/adaboost_model_performance_comparison_{timestamp}.png`: AdaBoost模型性能对比图
+- `bin/{timestamp}/decision_stump_performance_analysis_{timestamp}.png`: 决策树桩AdaBoost学习曲线
+- `bin/{timestamp}/linear_svm_performance_analysis_{timestamp}.png`: 线性SVM AdaBoost学习曲线
+- `bin/{timestamp}/models/`：包含训练好的模型文件
+- `results/{timestamp}/model_performance_comparison_{timestamp}.txt`: 模型性能对比结果文本文件
 
 完整实验结果和分析请参考`report.md`文件。
